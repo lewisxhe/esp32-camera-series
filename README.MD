@@ -3,7 +3,7 @@ TTGO-Camera
 
 ![pic](image/1.jpg)
 
-- Now Arduino officially supports the camera, you need to update the Arduino to the latest, see [arduino-esp32] (https://github.com/espressif/arduino-esp32/releases) for details.I am using the `1.0.1rc` version when writing this code.
+- Now Arduino officially supports the camera, you need to update the Arduino to the latest, see [arduino-esp32](https://github.com/espressif/arduino-esp32/releases) for details.I am using the `1.0.1rc` version when writing this code.
   
 - In order to support BME280, I will use [Adafruit_BME280_Library](https://github.com/adafruit/Adafruit_BME280_Library), but this library conflicts with <esp_camera.h> and enters [Adafruit_BME280_Library](https://github.com/adafruit/Adafruit_BME280_Library) In Adafruit_BME280_Library change <Adafruit_BME280.h> --> 29 lines comment #include <Adafruit_Sensor.h>, BME280 this library does not use this header file, so comment out and no problem
 
