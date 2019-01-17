@@ -43,7 +43,7 @@ TTGO-Camera
 | Button | 34  |
 | PIR    | 33  |
 
-* BUTTON : Reverse camera ,Currently the camera reverse color will not be normal, see [issues#9](https://github.com/espressif/esp32-camera/issues/9)
+* ~~BUTTON : Reverse camera ,Currently the camera reverse color will not be normal, see [issues#9](https://github.com/espressif/esp32-camera/issues/9)~~
   
 * PIR: Detecting human motion and will display the first screen
 
