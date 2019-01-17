@@ -100,7 +100,8 @@ void buttonLongPress()
     oled.clear();
 
 #ifdef ENABLE_SLEEP
-    digitalWrite(PWDN_GPIO_NUM, LOW);
+    pinMode(PWDN_GPIO_NUM,PULLUP);
+    digitalWrite(PWDN_GPIO_NUM, HIGH);
     oled.drawString(x, y, "Press again to wake up");
     oled.display();
 
