@@ -10,6 +10,8 @@
 #define ENABLE_SSD1306
 #define SOFTAP_MODE       //The comment will be connected to the specified ssid
 #define ENABLE_BME280
+#define ENABLE_SLEEP
+#define ENABLE_IP5306
 
 #define WIFI_SSID   "your wifi ssid"
 #define WIFI_PASSWD "you wifi password"
@@ -56,9 +58,28 @@ OneButton button1(BUTTON_1, true);
 Adafruit_BME280 bme;
 #endif
 
-void startCameraServer();
 
-void button1Func()
+#define IP5306_ADDR 0X75
+#define IP5306_REG_SYS_CTL0 0x00
+
+
+void startCameraServer();
+char buff[128];
+
+#ifdef ENABLE_IP5306
+bool setPowerBoostKeepOn(int en)
+{
+    Wire.beginTransmission(IP5306_ADDR);
+    Wire.write(IP5306_REG_SYS_CTL0);
+    if (en)
+        Wire.write(0x37); // Set bit1: 1 enable 0 disable boost keep on
+    else
+        Wire.write(0x35); // 0x37 is default reg value
+    return Wire.endTransmission() == 0;
+}
+#endif
+
+void buttonClick()
 {
     static bool en = false;
     xEventGroupClearBits(evGroup, 1);
@@ -69,15 +90,47 @@ void button1Func()
     xEventGroupSetBits(evGroup, 1);
 }
 
+void buttonLongPress()
+{
+    int x = oled.getWidth() / 2;
+    int y = oled.getHeight() / 2;
+    ui.disableAutoTransition();
+    oled.setTextAlignment(TEXT_ALIGN_CENTER);
+    oled.setFont(ArialMT_Plain_10);
+    oled.clear();
+
+#ifdef ENABLE_SLEEP
+    digitalWrite(PWDN_GPIO_NUM, LOW);
+    oled.drawString(x, y, "Press again to wake up");
+    oled.display();
+
+    delay(6000);
+
+    oled.clear();
+    oled.display();
+    oled.displayOff();
+
+    esp_sleep_enable_ext0_wakeup((gpio_num_t )BUTTON_1, LOW);
+    esp_deep_sleep_start();
+#endif
+}
+
+
 #ifdef ENABLE_SSD1306
 void drawFrame1(OLEDDisplay *display, OLEDDisplayUiState *state, int16_t x, int16_t y)
 {
-    display->setFont(ArialMT_Plain_16);
     display->setTextAlignment(TEXT_ALIGN_CENTER);
+#ifdef SOFTAP_MODE
+    display->setFont(ArialMT_Plain_10);
+    display->drawString(64 + x, 25 + y, buff);
+    display->drawString(64 + x, 45 + y, ip);
+#else
+    display->setFont(ArialMT_Plain_16);
     display->drawString(64 + x, 35 + y, ip);
+#endif
 
     if (digitalRead(AS312_PIN)) {
-        display->drawString(64 + x, 10 + y, "AS312 Trigger");
+        display->drawString(64 + x, 5 + y, "AS312 Trigger");
     }
 }
 
@@ -88,8 +141,8 @@ void drawFrame2(OLEDDisplay *display, OLEDDisplayUiState *state, int16_t x, int1
     static uint64_t lastMs;
 
     if (millis() - lastMs > 2000) {
-        lastMs = millis();
-        temp = "Temp:" + String(bme.readTemperature()) + " *C";
+        lastMs   = millis();
+        temp     = "Temp:" + String(bme.readTemperature()) + " *C";
         pressure = "Press:" + String(bme.readPressure() / 100.0F) + " hPa";
         altitude = "Altitude:" + String(bme.readAltitude(SEALEVELPRESSURE_HPA)) + " m";
         humidity = "Humidity:" + String(bme.readHumidity()) + " %";
@@ -109,19 +162,46 @@ FrameCallback frames[] = {drawFrame1, drawFrame2};
 
 void setup()
 {
+    int x = oled.getWidth() / 2;
+    int y = oled.getHeight() / 2;
+
     Serial.begin(115200);
     Serial.setDebugOutput(true);
     Serial.println();
 
     pinMode(AS312_PIN, INPUT);
 
+    Wire.begin(I2C_SDA, I2C_SCL);
+
+#ifdef ENABLE_IP5306
+    bool   isOk = setPowerBoostKeepOn(1);
+    String info = "IP5306 KeepOn " + String((isOk ? "PASS" : "FAIL"));
+#endif
+
 #ifdef ENABLE_SSD1306
     oled.init();
     oled.setFont(ArialMT_Plain_16);
     oled.setTextAlignment(TEXT_ALIGN_CENTER);
     delay(50);
-    oled.drawString(oled.getWidth() / 2, oled.getHeight() / 2, "TTGO Camera");
+    oled.drawString(x, y - 10, "TTGO Camera");
     oled.display();
+#endif
+
+#ifdef ENABLE_IP5306
+    delay(1000);
+    oled.setFont(ArialMT_Plain_10);
+    oled.clear();
+    oled.drawString(x, y - 10, info);
+    oled.display();
+    oled.setFont(ArialMT_Plain_16);
+    delay(1000);
+#endif
+
+#ifdef ENABLE_BME280
+    if (!bme.begin(BEM280_ADDRESS)) {
+        Serial.println("Could not find a valid BME280 sensor, check wiring!");
+        while (1);
+    }
 #endif
 
     if (!(evGroup = xEventGroupCreate())) {
@@ -129,14 +209,6 @@ void setup()
         while (1);
     }
     xEventGroupSetBits(evGroup, 1);
-
-#ifdef ENABLE_BME280
-    Wire.begin(I2C_SDA, I2C_SCL);
-    if (!bme.begin(BEM280_ADDRESS)) {
-        Serial.println("Could not find a valid BME280 sensor, check wiring!");
-        while (1);
-    }
-#endif
 
     camera_config_t config;
     config.ledc_channel = LEDC_CHANNEL_0;
@@ -180,11 +252,11 @@ void setup()
     sensor_t *s = esp_camera_sensor_get();
     s->set_framesize(s, FRAMESIZE_QVGA);
 
-    button1.attachClick(button1Func);
+    button1.attachLongPressStart(buttonLongPress);
+    button1.attachClick(buttonClick);
 
 #ifdef SOFTAP_MODE
     uint8_t mac[6];
-    char buff[128];
     WiFi.mode(WIFI_AP);
     IPAddress apIP = IPAddress(2, 2, 2, 1);
     WiFi.softAPConfig(apIP, apIP, IPAddress(255, 255, 255, 0));
@@ -209,6 +281,7 @@ void setup()
     oled.clear();
     oled.drawString(oled.getWidth() / 2, oled.getHeight() / 2, "WiFi Connected");
     oled.display();
+    delay(500);
 #endif
 
     startCameraServer();
