@@ -181,6 +181,7 @@ void setup()
 
 #ifdef ENABLE_SSD1306
     oled.init();
+    Wire.setClock(100000);  //! Reduce the speed and prevent the speed from being too high, causing the screen
     oled.setFont(ArialMT_Plain_16);
     oled.setTextAlignment(TEXT_ALIGN_CENTER);
     delay(50);
@@ -290,13 +291,12 @@ void setup()
     delay(50);
 
 #ifdef ENABLE_SSD1306
-    ui.setTargetFPS(60);
+    ui.setTargetFPS(30);
     ui.setIndicatorPosition(BOTTOM);
     ui.setIndicatorDirection(LEFT_RIGHT);
     ui.setFrameAnimation(SLIDE_LEFT);
     ui.setFrames(frames, FRAMES_SIZE);
     ui.setTimePerFrame(6000);
-    ui.init();
 #endif
 
 #ifdef SOFTAP_MODE
