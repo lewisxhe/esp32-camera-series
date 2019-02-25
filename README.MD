@@ -11,6 +11,9 @@ TTGO-Camera
   
 - Buttons require [OneButton](https://github.com/mathertel/OneButton) library support
 
+## Board Modify
+- The Camera version sold by TTGO will not have the BME280 sensor, because the temperature on the board affects the accuracy of the sensor. The default program does not enable the BME280 function. If necessary, turn on the `ENABLE_BME280` (on esp32-camera-bme280.ino line 12)
+
 ## TTGO CAM PINS
 | Name  | Num    |
 | ----- | ------ |
@@ -31,7 +34,7 @@ TTGO-Camera
 | SIOC  | 12     |
 | RESET | No use |
 
-## Sensor & OLED
+## OLED
 | Name | Num |
 | ---- | --- |
 | SDA  | 21  |
