@@ -1,7 +1,7 @@
 TTGO-Camera-Series
 =====================
 
-![pic](image/1.jpg)
+![pic](image/1.png)
 
 - Now Arduino officially supports the camera, you need to update the Arduino to the latest, see [arduino-esp32](https://github.com/espressif/arduino-esp32/releases) for details.I am using the `1.0.1rc2` version when writing this code.
   
