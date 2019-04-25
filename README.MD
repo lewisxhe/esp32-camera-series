@@ -44,7 +44,7 @@ TTGO-Camera-Series
 
 * BUTTON Click: Reverse camera ~~Currently the camera reverse color will not be normal, see [issues#9](https://github.com/espressif/esp32-camera/issues/9)~~
 
-* BUTTON LongPress : Enter sleep Mode , ~~Sleep current ~6.9mA~~
+* BUTTON LongPress : Enter sleep Mode , ~~Sleep current 6.9mA~~
   
 * RESET BUTTON: When the battery is powered, click to turn on the power
 
