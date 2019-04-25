@@ -1,4 +1,4 @@
-TTGO-Camera
+TTGO-Camera-Series
 =====================
 
 ![pic](image/1.jpg)
@@ -13,47 +13,42 @@ TTGO-Camera
 
 ## Board Modify
 - The Camera version sold by TTGO will not have the BME280 sensor, because the temperature on the board affects the accuracy of the sensor. The default program does not enable the BME280 function. If necessary, turn on the `ENABLE_BME280` (on esp32-camera-bme280.ino line 12)
+- Add OV2640 microphone version board support, need to enable `TTGO_OV2640_V16` macro for pin conversion, no microphone test, need microphone test please use [T-Camera](https://github.com/Xinyuan-LilyGO/T-Camera)
+
+
+
 
 ## TTGO CAM PINS
-| Name  | Num    |
-| ----- | ------ |
-| Y9    | 39     |
-| Y8    | 36     |
-| Y7    | 23     |
-| Y6    | 18     |
-| Y5    | 15     |
-| Y4    | 4      |
-| Y3    | 14     |
-| Y2    | 5      |
-| VSNC  | 27     |
-| HREF  | 25     |
-| PCLK  | 19     |
-| PWD   | 26     |
-| XCLK  | 32     |
-| SIOD  | 13     |
-| SIOC  | 12     |
-| RESET | No use |
-
-## OLED
-| Name | Num |
-| ---- | --- |
-| SDA  | 21  |
-| SCL  | 22  |
-
-## Other
-| Name   | Num |
-| ------ | --- |
-| Button | 34  |
-| PIR    | 33  |
+|  Name  | BME280/NoBME280-Version | Microphone-Version |
+| :----: | :---------------------: | :----------------: |
+|   Y9   |           39            |         36         |
+|   Y8   |           36            |         15         |
+|   Y7   |           23            |         12         |
+|   Y6   |           18            |         39         |
+|   Y5   |           15            |         35         |
+|   Y4   |            4            |         14         |
+|   Y3   |           14            |         13         |
+|   Y2   |            5            |         34         |
+|  VSNC  |           27            |         5          |
+|  HREF  |           25            |         27         |
+|  PCLK  |           19            |         25         |
+|  PWD   |           26            |        N/A         |
+|  XCLK  |           32            |         4          |
+|  SIOD  |           13            |         18         |
+|  SIOC  |           12            |         23         |
+| RESET  |           N/A           |        N/A         |
+|  SDA   |           21            |         21         |
+|  SCL   |           22            |         22         |
+| Button |           34            |         0          |
+|  PIR   |           33            |         19         |
 
 * BUTTON Click: Reverse camera ~~Currently the camera reverse color will not be normal, see [issues#9](https://github.com/espressif/esp32-camera/issues/9)~~
 
-* BUTTON LongPress : Enter sleep Mode , Sleep current ~6.9mA
+* BUTTON LongPress : Enter sleep Mode , ~~Sleep current ~6.9mA~~
   
 * RESET BUTTON: When the battery is powered, click to turn on the power
 
 * PIR: Detecting human motion and will display the first screen
-
 
 
 ## Test Video
