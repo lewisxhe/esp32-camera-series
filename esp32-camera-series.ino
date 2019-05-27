@@ -16,10 +16,10 @@
 // #define TTGO_T_CAMERA_V05
 
 //! [T_CAMERA_PLUS] With 240*240TFT display, SD card slot
-// #define TTGO_T_CAMERA_PLUS
+#define TTGO_T_CAMERA_PLUS
 
 //! [T_JORNAL] The most simplified version, without PSRAM
-#define TTGO_T_JORNAL
+// #define TTGO_T_JORNAL
 
 
 /***************************************
@@ -146,8 +146,8 @@
 #define HREF_GPIO_NUM       27
 #define PCLK_GPIO_NUM       25
 
-#define I2C_SDA             18
-#define I2C_SCL             23
+#define I2C_SDA             -1
+#define I2C_SCL             -1
 
 #undef ENABLE_SSD1306
 #undef ENABLE_BME280
@@ -155,6 +155,7 @@
 #undef ENABLE_IP5306
 #undef ENABLE_AS312
 #undef ENABLE_BUTTON
+#else
 #error "Please select board type"
 #endif
 
@@ -318,7 +319,8 @@ void setup()
 #ifdef ENABLE_AS312
     pinMode(AS312_PIN, INPUT);
 #endif
-    Wire.begin(I2C_SDA, I2C_SCL);
+    if (I2C_SDA > 0)
+        Wire.begin(I2C_SDA, I2C_SCL);
 
 #ifdef ENABLE_IP5306
     bool   isOk = setPowerBoostKeepOn(1);
