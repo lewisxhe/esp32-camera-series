@@ -42,7 +42,7 @@ TTGO-Camera-Series
 | Button |           34            |         0          |    32    |      N/A      |
 |  PIR   |           33            |         19         |   N/A    |      N/A      |
 
-- Note1:  The T-Camera Plus I2C is parallel to the camera SOID SOIC. If you want to use other I2C devices, you need to change the driver code of the underlying driver camera. For details, please refer to [esp32-camera-screen] (https://github.com/lewisxhe/esp32-camera-screen)
+- Note1:  The T-Camera Plus I2C is parallel to the camera SIOD SIOC. If you want to use other I2C devices, you need to change the driver code of the underlying driver camera. For details, please refer to [esp32-camera-screen] (https://github.com/lewisxhe/esp32-camera-screen)
 
 
 * BUTTON Click: Reverse camera ~~Currently the camera reverse color will not be normal, see [issues#9](https://github.com/espressif/esp32-camera/issues/9)~~
