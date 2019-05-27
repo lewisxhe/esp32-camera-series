@@ -19,28 +19,31 @@ TTGO-Camera-Series
 
 
 ## TTGO CAM PINS
-|  Name  | BME280/NoBME280-Version | Microphone-Version | T-Jornal |
-| :----: | :---------------------: | :----------------: | :------: |
-|   Y9   |           39            |         36         |    19    |
-|   Y8   |           36            |         15         |    36    |
-|   Y7   |           23            |         12         |    18    |
-|   Y6   |           18            |         39         |    39    |
-|   Y5   |           15            |         35         |    5     |
-|   Y4   |            4            |         14         |    34    |
-|   Y3   |           14            |         13         |    35    |
-|   Y2   |            5            |         34         |    17    |
-|  VSNC  |           27            |         5          |    22    |
-|  HREF  |           25            |         27         |    26    |
-|  PCLK  |           19            |         25         |    21    |
-|  PWD   |           26            |        N/A         |   N/A    |
-|  XCLK  |           32            |         4          |    27    |
-|  SIOD  |           13            |         18         |    25    |
-|  SIOC  |           12            |         23         |    23    |
-| RESET  |           N/A           |        N/A         |   N/A    |
-|  SDA   |           21            |         21         |    14    |
-|  SCL   |           22            |         22         |    13    |
-| Button |           34            |         0          |    32    |
-|  PIR   |           33            |         19         |   N/A    |
+|  Name  | BME280/NoBME280-Version | Microphone-Version | T-Jornal | T-Camera Plus |
+| :----: | :---------------------: | :----------------: | :------: | :-----------: |
+|   Y9   |           39            |         36         |    19    |      36       |
+|   Y8   |           36            |         15         |    36    |      37       |
+|   Y7   |           23            |         12         |    18    |      38       |
+|   Y6   |           18            |         39         |    39    |      39       |
+|   Y5   |           15            |         35         |    5     |      35       |
+|   Y4   |            4            |         14         |    34    |      26       |
+|   Y3   |           14            |         13         |    35    |      13       |
+|   Y2   |            5            |         34         |    17    |      34       |
+|  VSNC  |           27            |         5          |    22    |       5       |
+|  HREF  |           25            |         27         |    26    |      27       |
+|  PCLK  |           19            |         25         |    21    |      25       |
+|  PWD   |           26            |        N/A         |   N/A    |      N/A      |
+|  XCLK  |           32            |         4          |    27    |       4       |
+|  SIOD  |           13            |         18         |    25    |      18       |
+|  SIOC  |           12            |         23         |    23    |      23       |
+| RESET  |           N/A           |        N/A         |   N/A    |      N/A      |
+|  SDA   |           21            |         21         |    14    |   see Note1   |
+|  SCL   |           22            |         22         |    13    |   see Note1   |
+| Button |           34            |         0          |    32    |      N/A      |
+|  PIR   |           33            |         19         |   N/A    |      N/A      |
+
+- Note1:  The T-Camera Plus I2C is parallel to the camera SOID SOIC. If you want to use other I2C devices, you need to change the driver code of the underlying driver camera. For details, please refer to [esp32-camera-screen] (https://github.com/lewisxhe/esp32-camera-screen)
+
 
 * BUTTON Click: Reverse camera ~~Currently the camera reverse color will not be normal, see [issues#9](https://github.com/espressif/esp32-camera/issues/9)~~
 
