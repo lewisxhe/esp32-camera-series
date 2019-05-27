@@ -8,8 +8,18 @@
 /***************************************
  *  Board select
  **************************************/
-//! If you use OV2640_V16 microphone version, please enable this macro
-// #define TTGO_OV2640_V16 
+
+//! [T_CAMERA_MIC] With SSD1306 with microphone
+// #define TTGO_T_CAMERA_MIC_V16
+
+//! [T_CAMERA_V05] With SSD1306, with BME280 position
+// #define TTGO_T_CAMERA_V05
+
+//! [T_CAMERA_PLUS] With 240*240TFT display, SD card slot
+// #define TTGO_T_CAMERA_PLUS
+
+//! [T_JORNAL] The most simplified version, without PSRAM
+#define TTGO_T_JORNAL
 
 
 /***************************************
@@ -19,7 +29,9 @@
 #define SOFTAP_MODE       //The comment will be connected to the specified ssid
 // #define ENABLE_BME280
 #define ENABLE_SLEEP
-#define ENABLE_IP5306
+// #define ENABLE_IP5306
+#define ENABLE_AS312
+#define ENABLE_BUTTON
 
 
 /***************************************
@@ -29,11 +41,10 @@
 #define WIFI_PASSWD "you wifi password"
 
 
-
 /***************************************
  *  PinOUT
  **************************************/
-#ifdef TTGO_OV2640_V16
+#ifdef TTGO_OV2640_MIC_V16
 #define PWDN_GPIO_NUM       -1
 #define RESET_GPIO_NUM      -1
 #define XCLK_GPIO_NUM       4
@@ -53,9 +64,14 @@
 #define PCLK_GPIO_NUM       25
 #define AS312_PIN           19
 #define BUTTON_1            0
+
+#define I2C_SDA             21
+#define I2C_SCL             22
+
 #undef ENABLE_BME280
 #undef ENABLE_IP5306
-#else
+#define SSD130_MODLE_TYPE   GEOMETRY_128_64
+#elif defined(TTGO_T_CAMERA_V05)
 #define PWDN_GPIO_NUM       26
 #define RESET_GPIO_NUM      -1
 #define XCLK_GPIO_NUM       32
@@ -75,23 +91,89 @@
 #define PCLK_GPIO_NUM       19
 #define AS312_PIN           33
 #define BUTTON_1            34
-#endif
 
 #define I2C_SDA             21
 #define I2C_SCL             22
+
+#define SSD130_MODLE_TYPE   GEOMETRY_128_64
+
+#elif defined(TTGO_T_JORNAL)
+
+#define PWDN_GPIO_NUM     -1
+#define RESET_GPIO_NUM    15
+#define XCLK_GPIO_NUM     27
+#define SIOD_GPIO_NUM     25
+#define SIOC_GPIO_NUM     23
+
+#define Y9_GPIO_NUM       19
+#define Y8_GPIO_NUM       36
+#define Y7_GPIO_NUM       18
+#define Y6_GPIO_NUM       39
+#define Y5_GPIO_NUM       5
+#define Y4_GPIO_NUM       34
+#define Y3_GPIO_NUM       35
+#define Y2_GPIO_NUM       17
+#define VSYNC_GPIO_NUM    22
+#define HREF_GPIO_NUM     26
+#define PCLK_GPIO_NUM     21
+
+#define I2C_SDA           14
+#define I2C_SCL           13
+
+#define BUTTON_1          32
+
+#define SSD130_MODLE_TYPE   GEOMETRY_128_32
+
+#undef ENABLE_BME280
+#undef ENABLE_AS312
+
+#elif defined(TTGO_T_CAMERA_PLUS)
+#define PWDN_GPIO_NUM       -1
+#define RESET_GPIO_NUM      -1
+#define XCLK_GPIO_NUM       4
+#define SIOD_GPIO_NUM       18
+#define SIOC_GPIO_NUM       23
+
+#define Y9_GPIO_NUM         36
+#define Y8_GPIO_NUM         37
+#define Y7_GPIO_NUM         38
+#define Y6_GPIO_NUM         39
+#define Y5_GPIO_NUM         35
+#define Y4_GPIO_NUM         26
+#define Y3_GPIO_NUM         13
+#define Y2_GPIO_NUM         34
+#define VSYNC_GPIO_NUM      5
+#define HREF_GPIO_NUM       27
+#define PCLK_GPIO_NUM       25
+
+#define I2C_SDA             18
+#define I2C_SCL             23
+
+#undef ENABLE_SSD1306
+#undef ENABLE_BME280
+#undef ENABLE_SLEEP
+#undef ENABLE_IP5306
+#undef ENABLE_AS312
+#undef ENABLE_BUTTON
+#error "Please select board type"
+#endif
+
+
 
 #ifdef ENABLE_SSD1306
 #include "SSD1306.h"
 #include "OLEDDisplayUi.h"
 #define SSD1306_ADDRESS 0x3c
-SSD1306 oled(SSD1306_ADDRESS, I2C_SDA, I2C_SCL);
+SSD1306 oled(SSD1306_ADDRESS, I2C_SDA, I2C_SCL, SSD130_MODLE_TYPE);
 OLEDDisplayUi ui(&oled);
 #endif
 
 String ip;
 EventGroupHandle_t evGroup;
 
+#ifdef ENABLE_BUTTON
 OneButton button1(BUTTON_1, true);
+#endif
 
 #ifdef ENABLE_BME280
 #define BEM280_ADDRESS 0X77
@@ -133,13 +215,14 @@ void buttonClick()
 
 void buttonLongPress()
 {
+#ifdef ENABLE_SSD1306
     int x = oled.getWidth() / 2;
     int y = oled.getHeight() / 2;
     ui.disableAutoTransition();
     oled.setTextAlignment(TEXT_ALIGN_CENTER);
     oled.setFont(ArialMT_Plain_10);
     oled.clear();
-
+#endif
 #ifdef ENABLE_SLEEP
     if (PWDN_GPIO_NUM > 0) {
         pinMode(PWDN_GPIO_NUM, PULLUP);
@@ -164,17 +247,26 @@ void buttonLongPress()
 void drawFrame1(OLEDDisplay *display, OLEDDisplayUiState *state, int16_t x, int16_t y)
 {
     display->setTextAlignment(TEXT_ALIGN_CENTER);
+
+    int y1 = 25;
+
+    if (oled.getHeight() == 32) {
+        y1 = 10;
+    }
+
 #ifdef SOFTAP_MODE
     display->setFont(ArialMT_Plain_10);
-    display->drawString(64 + x, 25 + y, buff);
+    display->drawString(64 + x, y1 + y, buff);
 #else
     display->setFont(ArialMT_Plain_16);
-    display->drawString(64 + x, 35 + y, ip);
+    display->drawString(64 + x, y1 + y, ip);
 #endif
 
+#ifdef ENABLE_AS312
     if (digitalRead(AS312_PIN)) {
         display->drawString(64 + x, 5 + y, "AS312 Trigger");
     }
+#endif
 }
 
 void drawFrame2(OLEDDisplay *display, OLEDDisplayUiState *state, int16_t x, int16_t y)
@@ -199,9 +291,16 @@ void drawFrame2(OLEDDisplay *display, OLEDDisplayUiState *state, int16_t x, int1
 #else
     display->setTextAlignment(TEXT_ALIGN_CENTER);
     display->setFont(ArialMT_Plain_10);
-    display->drawString( 64 + x, 5 + y, "Camera Ready! Use");
-    display->drawString(64 + x, 25 + y, "http://" + ip );
-    display->drawString(64 + x, 45 + y, "to connect");
+
+    if (oled.getHeight() == 32) {
+        display->drawString( 64 + x, 0 + y, "Camera Ready! Use");
+        display->drawString(64 + x, 10 + y, "http://" + ip );
+        display->drawString(64 + x, 16 + y, "to connect");
+    } else {
+        display->drawString( 64 + x, 5 + y, "Camera Ready! Use");
+        display->drawString(64 + x, 25 + y, "http://" + ip );
+        display->drawString(64 + x, 45 + y, "to connect");
+    }
 #endif
 }
 
@@ -211,16 +310,14 @@ FrameCallback frames[] = {drawFrame1, drawFrame2};
 
 void setup()
 {
-    int x = oled.getWidth() / 2;
-    int y = oled.getHeight() / 2;
 
     Serial.begin(115200);
     Serial.setDebugOutput(true);
     Serial.println();
 
-
+#ifdef ENABLE_AS312
     pinMode(AS312_PIN, INPUT);
-
+#endif
     Wire.begin(I2C_SDA, I2C_SCL);
 
 #ifdef ENABLE_IP5306
@@ -229,6 +326,8 @@ void setup()
 #endif
 
 #ifdef ENABLE_SSD1306
+    int x = oled.getWidth() / 2;
+    int y = oled.getHeight() / 2;
     oled.init();
     Wire.setClock(100000);  //! Reduce the speed and prevent the speed from being too high, causing the screen
     oled.setFont(ArialMT_Plain_16);
@@ -262,7 +361,7 @@ void setup()
     xEventGroupSetBits(evGroup, 1);
 
 
-#ifdef TTGO_OV2640_V16
+#ifdef TTGO_OV2640_MIC_V16
     /* IO13, IO14 is designed for JTAG by default,
     * to use it as generalized input,
     * firstly declair it as pullup input */
@@ -292,11 +391,16 @@ void setup()
     config.xclk_freq_hz = 20000000;
     config.pixel_format = PIXFORMAT_JPEG;
     //init with high specs to pre-allocate larger buffers
-    config.frame_size = FRAMESIZE_UXGA;
-    config.jpeg_quality = 10;
-    config.fb_count = 2;
+    if (psramFound()) {
+        config.frame_size = FRAMESIZE_UXGA;
+        config.jpeg_quality = 10;
+        config.fb_count = 2;
+    } else {
+        config.frame_size = FRAMESIZE_SVGA;
+        config.jpeg_quality = 12;
+        config.fb_count = 1;
+    }
 
-    // camera init
     esp_err_t err = esp_camera_init(&config);
     if (err != ESP_OK) {
         Serial.printf("Camera init Fail");
@@ -312,8 +416,10 @@ void setup()
     sensor_t *s = esp_camera_sensor_get();
     s->set_framesize(s, FRAMESIZE_QVGA);
 
+#ifdef ENABLE_BUTTON
     button1.attachLongPressStart(buttonLongPress);
     button1.attachClick(buttonClick);
+#endif
 
 #ifdef SOFTAP_MODE
     uint8_t mac[6];
@@ -367,7 +473,11 @@ void loop()
 #ifdef ENABLE_SSD1306
     if (ui.update()) {
 #endif
+#ifdef ENABLE_BUTTON
         button1.tick();
+#else
+        delay(500);
+#endif
 #ifdef ENABLE_SSD1306
     }
 #endif
