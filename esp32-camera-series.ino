@@ -10,13 +10,13 @@
  **************************************/
 
 //! [T_CAMERA_MIC] With SSD1306 with microphone
-// #define TTGO_T_CAMERA_MIC_V16
+#define TTGO_T_CAMERA_MIC_V16
 
 //! [T_CAMERA_V05] With SSD1306, with BME280 position
 // #define TTGO_T_CAMERA_V05
 
 //! [T_CAMERA_PLUS] With 240*240TFT display, SD card slot
-#define TTGO_T_CAMERA_PLUS
+// #define TTGO_T_CAMERA_PLUS
 
 //! [T_JORNAL] The most simplified version, without PSRAM
 // #define TTGO_T_JORNAL
@@ -44,7 +44,7 @@
 /***************************************
  *  PinOUT
  **************************************/
-#ifdef TTGO_OV2640_MIC_V16
+#ifdef TTGO_T_CAMERA_MIC_V16
 #define PWDN_GPIO_NUM       -1
 #define RESET_GPIO_NUM      -1
 #define XCLK_GPIO_NUM       4
@@ -363,7 +363,7 @@ void setup()
     xEventGroupSetBits(evGroup, 1);
 
 
-#ifdef TTGO_OV2640_MIC_V16
+#ifdef TTGO_T_CAMERA_MIC_V16
     /* IO13, IO14 is designed for JTAG by default,
     * to use it as generalized input,
     * firstly declair it as pullup input */
@@ -431,7 +431,8 @@ void setup()
     esp_wifi_get_mac(WIFI_IF_AP, mac);
     sprintf(buff, "TTGO-CAMERA-%02X:%02X", mac[4], mac[5]);
     Serial.printf("Device AP Name:%s\n", buff);
-    if (!WiFi.softAP(buff, NULL, 1, 0)) {
+    // if (!WiFi.softAP(buff, NULL, 1, 0)) {
+    if (!WiFi.softAP(buff, "12345678", 1, 0)) {
         Serial.println("AP Begin Failed.");
         while (1);
     }
