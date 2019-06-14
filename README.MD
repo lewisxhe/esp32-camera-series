@@ -143,3 +143,4 @@ TTGO-Camera-Series
     # Image settings
     name: ttgo_camearv16
     ```
+    ![](image/2.png)
