@@ -10,9 +10,10 @@
  **************************************/
 
 //! [T_CAMERA_MIC] With SSD1306 with microphone
-#define TTGO_T_CAMERA_MIC_V16
+// #define TTGO_T_CAMERA_MIC_V16
 
-//! [T_CAMERA_V05] With SSD1306, with BME280 position
+//! [T_CAMERA_V05 or TTGO_T_CAMERA_V1_7_2] With SSD1306, with BME280 position
+//! Different power management, the same pin
 // #define TTGO_T_CAMERA_V05
 
 //! [T_CAMERA_PLUS] With 240*240TFT display, SD card slot
@@ -20,7 +21,6 @@
 
 //! [T_JORNAL] The most simplified version, without PSRAM
 // #define TTGO_T_JORNAL
-
 
 /***************************************
  *  Modules
@@ -40,11 +40,10 @@
 #define WIFI_SSID   "your wifi ssid"
 #define WIFI_PASSWD "you wifi password"
 
-
 /***************************************
  *  PinOUT
  **************************************/
-#ifdef TTGO_T_CAMERA_MIC_V16
+#if defined(TTGO_T_CAMERA_MIC_V16)
 #define PWDN_GPIO_NUM       -1
 #define RESET_GPIO_NUM      -1
 #define XCLK_GPIO_NUM       4
@@ -71,7 +70,7 @@
 #undef ENABLE_BME280
 #undef ENABLE_IP5306
 #define SSD130_MODLE_TYPE   GEOMETRY_128_64
-#elif defined(TTGO_T_CAMERA_V05)
+#elif defined(TTGO_T_CAMERA_V05) || defined(TTGO_T_CAMERA_V1_7_2)
 #define PWDN_GPIO_NUM       26
 #define RESET_GPIO_NUM      -1
 #define XCLK_GPIO_NUM       32
@@ -238,7 +237,8 @@ void buttonLongPress()
     oled.display();
     oled.displayOff();
 
-    esp_sleep_enable_ext0_wakeup((gpio_num_t )BUTTON_1, LOW);
+    // esp_sleep_enable_ext0_wakeup((gpio_num_t )BUTTON_1, LOW);
+    esp_sleep_enable_ext1_wakeup(((uint64_t)(((uint64_t)1) << BUTTON_1)), ESP_EXT1_WAKEUP_ALL_LOW);
     esp_deep_sleep_start();
 #endif
 }
@@ -331,7 +331,7 @@ void setup()
     int x = oled.getWidth() / 2;
     int y = oled.getHeight() / 2;
     oled.init();
-    Wire.setClock(100000);  //! Reduce the speed and prevent the speed from being too high, causing the screen
+    // Wire.setClock(100000);  //! Reduce the speed and prevent the speed from being too high, causing the screen
     oled.setFont(ArialMT_Plain_16);
     oled.setTextAlignment(TEXT_ALIGN_CENTER);
     delay(50);
@@ -361,7 +361,6 @@ void setup()
         while (1);
     }
     xEventGroupSetBits(evGroup, 1);
-
 
 #ifdef TTGO_T_CAMERA_MIC_V16
     /* IO13, IO14 is designed for JTAG by default,
@@ -431,8 +430,7 @@ void setup()
     esp_wifi_get_mac(WIFI_IF_AP, mac);
     sprintf(buff, "TTGO-CAMERA-%02X:%02X", mac[4], mac[5]);
     Serial.printf("Device AP Name:%s\n", buff);
-    // if (!WiFi.softAP(buff, NULL, 1, 0)) {
-    if (!WiFi.softAP(buff, "12345678", 1, 0)) {
+    if (!WiFi.softAP(buff, NULL, 1, 0)) {
         Serial.println("AP Begin Failed.");
         while (1);
     }
