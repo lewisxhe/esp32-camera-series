@@ -96,8 +96,8 @@ TTGO-Camera-Series
       pixel_clock_pin: GPIO19
       power_down_pin: GPIO26
 
-    # Image settings
-    name: ttgo_camearv05
+      # Image settings
+      name: ttgo_camearv05
     ```
 
 - TTGO_T_CameraV16
@@ -137,7 +137,7 @@ TTGO-Camera-Series
       href_pin: GPIO27
       pixel_clock_pin: GPIO25
 
-    # Image settings
-    name: ttgo_camearv16
+      # Image settings
+      name: ttgo_camearv16
     ```
     ![](image/2.png)
