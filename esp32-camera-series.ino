@@ -423,17 +423,12 @@ void setup()
 #endif
 
 #ifdef SOFTAP_MODE
+    Serial.println("Configuring access point...");
     uint8_t mac[6];
-    WiFi.mode(WIFI_AP);
-    IPAddress apIP = IPAddress(2, 2, 2, 1);
-    WiFi.softAPConfig(apIP, apIP, IPAddress(255, 255, 255, 0));
     esp_wifi_get_mac(WIFI_IF_AP, mac);
     sprintf(buff, "TTGO-CAMERA-%02X:%02X", mac[4], mac[5]);
-    Serial.printf("Device AP Name:%s\n", buff);
-    if (!WiFi.softAP(buff, NULL, 1, 0)) {
-        Serial.println("AP Begin Failed.");
-        while (1);
-    }
+    WiFi.softAP(buff);
+    ip = WiFi.softAPIP().toString();
 #else
     WiFi.begin(WIFI_SSID, WIFI_PASSWD);
     while (WiFi.status() != WL_CONNECTED) {
@@ -442,6 +437,7 @@ void setup()
     }
     Serial.println("");
     Serial.println("WiFi connected");
+    ip = WiFi.localIP().toString();
 #endif
 
     startCameraServer();
@@ -455,13 +451,6 @@ void setup()
     ui.setFrameAnimation(SLIDE_LEFT);
     ui.setFrames(frames, FRAMES_SIZE);
     ui.setTimePerFrame(6000);
-#endif
-
-#ifdef SOFTAP_MODE
-    ip = WiFi.softAPIP().toString();
-    Serial.printf("\nAp Started .. Please Connect %s hotspot\n", buff);
-#else
-    ip = WiFi.localIP().toString();
 #endif
 
     Serial.print("Camera Ready! Use 'http://");
