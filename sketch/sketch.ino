@@ -24,6 +24,7 @@ Compatible with all TTGO camera products, written by LewisHe
 // #define T_Camera_V05_VERSION
 // #define T_Camera_V16_VERSION
 // #define T_Camera_V162_VERSION
+// #define T_Camera_V17_VERSION
 // #define ESPRESSIF_ESP_EYE
 
 /***************************************

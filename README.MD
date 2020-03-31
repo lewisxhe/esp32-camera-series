@@ -7,11 +7,12 @@
 
 |              Pin table               |                                                           Product                                                            | Status |
 | :----------------------------------: | :--------------------------------------------------------------------------------------------------------------------------: | ------ |
-|  [T_CarmerV16](docs/T_CarmerV16.md)  |  [Click to view product link](https://pt.aliexpress.com/item/32968683765.html?spm=a2g03.12010615.8148356.9.6cb25eafHRaJ7j)   | ✅      |
 | [T_CarmerV162](docs/T_CarmerV162.md) |  [Click to view product link](https://pt.aliexpress.com/item/32968683765.html?spm=a2g03.12010615.8148356.9.6cb25eafHRaJ7j)   | ✅      |
+| [T_CarmerV17](docs/T_CarmerV17.md) |  [Click to view product link](https://pt.aliexpress.com/item/32968683765.html?spm=a2g03.12010615.8148356.9.6cb25eafHRaJ7j)   | ✅      |
 | [T_CameraMini](docs/T_CameraMini.md) | [Click to view product link](https://pt.aliexpress.com/item/4000329886104.html?spm=a2g03.12010615.8148356.37.425b3f82S1NoMc) | ✅      |
 | [T_CameraPlus](docs/T_CameraPlus.md) |   [Click to view product link](https://pt.aliexpress.com/item/32971057846.html?spm=a2g0o.detail.1000023.13.2a017cd8ODCSaR)   | ✅      |
 |     [T-Joranl](docs/T_Joranl.md)     |  [Click to view product link](https://pt.aliexpress.com/item/32952409255.html?spm=a2g03.12010615.8148356.17.42a01680aa2W9D)  | ✅      |
+|  [T_CarmerV16](docs/T_CarmerV16.md)  |                                                           Obsolete                                                           | ✅      |
 |  [T_CarmerV05](docs/T_CarmerV05.md)  |                                                           Obsolete                                                           | ❌      |
 
 
