@@ -23,14 +23,14 @@ Compatible with all TTGO camera products, written by LewisHe
 // #define T_Camera_PLUS_VERSION
 // #define T_Camera_V05_VERSION
 // #define T_Camera_V16_VERSION
-// #define T_Camera_V162_VERSION
+#define T_Camera_V162_VERSION
 // #define T_Camera_V17_VERSION
 // #define ESPRESSIF_ESP_EYE
 
 /***************************************
  *  Function
  **************************************/
-// #define SOFTAP_MODE       //The comment will be connected to the specified ssid
+#define SOFTAP_MODE       //The comment will be connected to the specified ssid
 
 //When there is BME280, set the reading time here
 #define DEFAULT_MEASUR_MILLIS   3000        /* Get sensor time by default (ms)*/
@@ -374,6 +374,9 @@ bool setupCamera()
     config.pin_reset = RESET_GPIO_NUM;
     config.xclk_freq_hz = 20000000;
     config.pixel_format = PIXFORMAT_JPEG;
+    config.fb_location = CAMERA_FB_IN_PSRAM;
+    config.grab_mode = CAMERA_GRAB_LATEST;
+
     //init with high specs to pre-allocate larger buffers
     if (psramFound()) {
         config.frame_size = FRAMESIZE_UXGA;
@@ -383,6 +386,7 @@ bool setupCamera()
         config.frame_size = FRAMESIZE_SVGA;
         config.jpeg_quality = 12;
         config.fb_count = 1;
+        config.fb_location = CAMERA_FB_IN_DRAM;
     }
 #endif
 
